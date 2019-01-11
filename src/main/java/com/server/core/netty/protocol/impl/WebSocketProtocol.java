@@ -28,7 +28,7 @@ public class WebSocketProtocol implements Protocol {
 	}
 
 	@Override
-	public void response() {
+	public Object response() {
 
 		SocketResponseMsg response = null;
 
@@ -62,6 +62,8 @@ public class WebSocketProtocol implements Protocol {
 				}	
 			}
 		}
+		
+		return null;
 	}
 
 }

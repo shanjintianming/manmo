@@ -16,8 +16,9 @@ public class HttpProtocol implements Protocol {
 	}
 	
 	@Override
-	public void response() {
+	public Builder response() {
 		Builder responseMsg = Action.toRequest(msg);
 		responseMsg.setConnectType(1);
+		return responseMsg;
 	}
 }

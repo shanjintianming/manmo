@@ -20,6 +20,7 @@
 		<aspectj-version>1.9.1</aspectj-version>
 		<netty-version>4.1.24.Final</netty-version>
 		<log4j-version>2.11.0</log4j-version>
+		<protobuf-version>3.6.1</protobuf-version>
 	</properties>
 
 	<repositories><!-- 代码库 -->
@@ -145,8 +146,16 @@
 		<dependency>
 			<groupId>com.google.protobuf</groupId>
 			<artifactId>protobuf-java</artifactId>
-			<version>3.5.1</version>
+			<version>${protobuf-version}</version>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java-util -->
+		<dependency>
+			<groupId>com.google.protobuf</groupId>
+			<artifactId>protobuf-java-util</artifactId>
+			<version>${protobuf-version}</version>
+		</dependency>
+
 
 		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
 		<dependency>
@@ -168,7 +177,7 @@
 			<artifactId>disruptor</artifactId>
 			<version>3.4.2</version>
 		</dependency>
-		
+
 		<!-- https://mvnrepository.com/artifact/net.iharder/base64 -->
 		<dependency>
 			<groupId>net.iharder</groupId>

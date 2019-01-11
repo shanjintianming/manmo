@@ -90,6 +90,10 @@ public class RedisCache implements Cache {
 	@Override
 	public void put(Object key, Object value) {
 		
+		if(value == null) {
+			return;
+		}
+		
 		Gson gson = new Gson();
 		String keyStr = "";
 		String valueJson = "";
@@ -113,6 +117,11 @@ public class RedisCache implements Cache {
 
 	@Override
 	public ValueWrapper putIfAbsent(Object key, Object value) {
+		
+		if(value == null) {
+			return null;
+		}
+		
 		Gson gson = new Gson();
 		String keyStr = "";
 		String valueJson = "";
