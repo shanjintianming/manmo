@@ -1,0 +1,17 @@
+package com.server.core.annotation;
+
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import org.springframework.stereotype.Component;
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ TYPE, METHOD })
+@Component
+public @interface HttpController {
+
+}
