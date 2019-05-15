@@ -7,17 +7,18 @@ import org.springframework.cache.Cache;
 
 import com.google.gson.Gson;
 
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
+import io.lettuce.core.RedisClient;
+import io.lettuce.core.api.StatefulRedisConnection;
+import io.lettuce.core.api.sync.RedisCommands;
 
 public class RedisCache implements Cache {
 
-	private JedisPool jedisPool;
+	private StatefulRedisConnection redisConnection;
 	
 	private String name;
 	
-	public RedisCache(JedisPool jedisPool, String name) {
-		this.jedisPool = jedisPool;
+	public RedisCache(RedisClient redisClient, String name) {
+		this.redisConnection = redisClient.connect();
 		this.name = name;
 	}
 	
@@ -44,9 +45,9 @@ public class RedisCache implements Cache {
 		}
 		
 		RedisValueWrapper result = new RedisValueWrapper();	
-		Jedis jedis = jedisPool.getResource();
-		jedis.select(1);
-		Map<String, String> valueMap = jedis.hgetAll(keyStr);
+		RedisCommands command = redisConnection.sync();
+		command.select(1);
+		Map<String, String> valueMap = command.hgetall(keyStr);
 		if(valueMap == null || valueMap.isEmpty()) {
 			return null;
 		}
@@ -67,9 +68,9 @@ public class RedisCache implements Cache {
 			keyStr = gson.toJson(key);
 		}
 		
-		Jedis jedis = jedisPool.getResource();
-		jedis.select(1);
-		String value = jedis.hget(keyStr, type.getName());
+		RedisCommands command = redisConnection.sync();
+		command.select(1);
+		String value = (String) command.hget(keyStr, type.getName());
 		T result = gson.fromJson(value, type);
 		return result;
 	}
@@ -110,9 +111,9 @@ public class RedisCache implements Cache {
 			valueJson = gson.toJson(value);
 		}
 		
-		Jedis jedis = jedisPool.getResource();
-		jedis.select(1);
-		jedis.hset(keyStr, value.getClass().getName(), valueJson);
+		RedisCommands command = redisConnection.sync();
+		command.select(1);
+		command.hset(keyStr, value.getClass().getName(), valueJson);
 	}
 
 	@Override
@@ -138,13 +139,13 @@ public class RedisCache implements Cache {
 			valueJson = gson.toJson(value);
 		}
 		
-		Jedis jedis = jedisPool.getResource();
-		jedis.select(1);
-		jedis.hset(keyStr, value.getClass().getName(), valueJson);
+		RedisCommands command = redisConnection.sync();
+		command.select(1);
+		command.hset(keyStr, value.getClass().getName(), valueJson);
 		
 		
 		RedisValueWrapper result = new RedisValueWrapper();	
-		Map<String, String> valueMap = jedis.hgetAll(keyStr);
+		Map<String, String> valueMap = command.hgetall(keyStr);
 		result.setValue(valueMap);
 		return result;
 	}
@@ -161,15 +162,15 @@ public class RedisCache implements Cache {
 			keyStr = gson.toJson(key);
 		}
 		
-		Jedis jedis = jedisPool.getResource();
-		jedis.select(1);
-		jedis.del(keyStr);
+		RedisCommands command = redisConnection.sync();
+		command.select(1);
+		command.del(keyStr);
 	}
 
 	@Override
 	public void clear() {
-		Jedis jedis = jedisPool.getResource();
-		jedis.select(1);
-		jedis.flushDB();
+		RedisCommands command = redisConnection.sync();
+		command.select(1);
+		command.flushdb();
 	}	
 }
